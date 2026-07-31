@@ -1,55 +1,50 @@
 document.addEventListener('DOMContentLoaded', () => {
+  // Elements
+  const tabUpload = document.getElementById('tab-upload');
+  const tabCamera = document.getElementById('tab-camera');
+  const uploadSection = document.getElementById('upload-section');
+  const cameraSection = document.getElementById('camera-section');
+  
   const uploadBox = document.getElementById('upload-box');
   const qrInput = document.getElementById('qr-input');
   const previewImg = document.getElementById('preview-img');
   const uploadContent = document.querySelector('.upload-content');
+  
+  const video = document.getElementById('webcam');
   const amountInput = document.getElementById('amount');
+  const merchantInput = document.getElementById('merchant-name');
   const currencySymbol = document.getElementById('currency-symbol');
   const rawDataTextarea = document.getElementById('raw-data');
   const statusMsg = document.getElementById('status-msg');
   const resetBtn = document.getElementById('reset-btn');
+  
   const canvas = document.getElementById('qr-canvas');
   const ctx = canvas.getContext('2d');
 
-  // Trigger file selection on box click
+  let stream = null;
+  let scanning = false;
+
+  // Tab switching logic
+  tabUpload.addEventListener('click', () => {
+    tabUpload.classList.add('active');
+    tabCamera.classList.remove('active');
+    uploadSection.classList.remove('hidden');
+    cameraSection.classList.add('hidden');
+    stopCamera();
+  });
+
+  tabCamera.addEventListener('click', () => {
+    tabCamera.classList.add('active');
+    tabUpload.classList.remove('active');
+    cameraSection.classList.remove('hidden');
+    uploadSection.classList.add('hidden');
+    startCamera();
+  });
+
+  // File Upload trigger
   uploadBox.addEventListener('click', () => qrInput.click());
-
-  // Handle Drag and Drop
-  uploadBox.addEventListener('dragover', (e) => {
-    e.preventDefault();
-    uploadBox.style.borderColor = '#2563eb';
-  });
-
-  uploadBox.addEventListener('dragleave', () => {
-    uploadBox.style.borderColor = '#d1d5db';
-  });
-
-  uploadBox.addEventListener('drop', (e) => {
-    e.preventDefault();
-    uploadBox.style.borderColor = '#d1d5db';
-    if (e.dataTransfer.files.length) {
-      qrInput.files = e.dataTransfer.files;
-      handleFile(e.dataTransfer.files[0]);
-    }
-  });
-
-  // Handle file select
   qrInput.addEventListener('change', (e) => {
-    if (e.target.files.length) {
-      handleFile(e.target.files[0]);
-    }
-  });
-
-  // Reset UI
-  resetBtn.addEventListener('click', () => {
-    qrInput.value = '';
-    previewImg.src = '';
-    previewImg.hidden = true;
-    uploadContent.classList.remove('hidden');
-    amountInput.value = '';
-    rawDataTextarea.value = '';
-    currencySymbol.textContent = '$';
-    hideStatus();
+    if (e.target.files.length) handleFile(e.target.files[0]);
   });
 
   function handleFile(file) {
@@ -57,12 +52,10 @@ document.addEventListener('DOMContentLoaded', () => {
     reader.onload = (e) => {
       const img = new Image();
       img.onload = () => {
-        // Show preview image
         previewImg.src = e.target.result;
         previewImg.hidden = false;
         uploadContent.classList.add('hidden');
 
-        // Draw image onto canvas to process pixels
         canvas.width = img.width;
         canvas.height = img.height;
         ctx.drawImage(img, 0, 0, img.width, img.height);
@@ -71,8 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const code = jsQR(imageData.data, imageData.width, imageData.height);
 
         if (code) {
-          rawDataTextarea.value = code.data;
-          parseBankQR(code.data);
+          processQRData(code.data);
         } else {
           showStatus('No QR code detected in the uploaded image.', 'error');
         }
@@ -82,52 +74,88 @@ document.addEventListener('DOMContentLoaded', () => {
     reader.readAsDataURL(file);
   }
 
-  /**
-   * Parse EMVCo / Bank QR Standard (TLV format: Tag - Length - Value)
-   * Tag 54 = Transaction Amount
-   * Tag 53 = Transaction Currency (840 = USD, 116 = KHR)
-   */
-  function parseBankQR(qrString) {
-    const parsedData = parseEMVCo(qrString);
-
-    // Check Tag 54 for Amount
-    if (parsedData['54']) {
-      const amount = parsedData['54'];
-      amountInput.value = parseFloat(amount).toFixed(2);
-
-      // Check Tag 53 for Currency
-      if (parsedData['53'] === '116') {
-        currencySymbol.textContent = '៛'; // KHR
-      } else {
-        currencySymbol.textContent = '$'; // USD (Default / 840)
-      }
-
-      showStatus('Amount successfully detected!', 'success');
-    } else {
-      amountInput.value = '';
-      showStatus('QR Code detected, but no amount tag (Tag 54) was found (Dynamic amount not set).', 'warning');
+  // Live Camera Scanner Functions
+  async function startCamera() {
+    try {
+      stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+      video.srcObject = stream;
+      video.setAttribute('playsinline', true);
+      video.play();
+      scanning = true;
+      requestAnimationFrame(scanFrame);
+    } catch (err) {
+      showStatus('Unable to access camera: ' + err.message, 'error');
     }
   }
 
-  /**
-   * Decodes TLV (Tag-Length-Value) strings used in EMVCo standard bank QRs
-   */
+  function stopCamera() {
+    scanning = false;
+    if (stream) {
+      stream.getTracks().forEach(track => track.stop());
+      stream = null;
+    }
+  }
+
+  function scanFrame() {
+    if (!scanning) return;
+
+    if (video.readyState === video.HAVE_ENOUGH_DATA) {
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      
+      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      const code = jsQR(imageData.data, imageData.width, imageData.height);
+
+      if (code) {
+        processQRData(code.data);
+        stopCamera(); // Stop camera on successful scan
+        return;
+      }
+    }
+    requestAnimationFrame(scanFrame);
+  }
+
+  // EMVCo QR Parser (ABA / Bakong / Standard Bank QR)
+  function processQRData(qrString) {
+    rawDataTextarea.value = qrString;
+    const parsed = parseEMVCo(qrString);
+
+    // Merchant Name (Tag 59)
+    if (parsed['59']) {
+      merchantInput.value = parsed['59'];
+    } else {
+      merchantInput.value = 'N/A';
+    }
+
+    // Currency Check (Tag 53: 116 = KHR, 840 = USD)
+    if (parsed['53'] === '116') {
+      currencySymbol.textContent = '៛';
+    } else {
+      currencySymbol.textContent = '$';
+    }
+
+    // Amount Check (Tag 54)
+    if (parsed['54']) {
+      amountInput.value = parseFloat(parsed['54']).toFixed(2);
+      showStatus('QR Parsed successfully!', 'success');
+    } else {
+      amountInput.value = '';
+      showStatus('Static QR Code scanned. Amount tag (Tag 54) not included in QR.', 'warning');
+    }
+  }
+
   function parseEMVCo(str) {
     const result = {};
     let index = 0;
-
     while (index < str.length) {
       const tag = str.substring(index, index + 2);
       const length = parseInt(str.substring(index + 2, index + 4), 10);
-      
       if (isNaN(length)) break;
-
       const value = str.substring(index + 4, index + 4 + length);
       result[tag] = value;
-
       index += 4 + length;
     }
-
     return result;
   }
 
@@ -136,7 +164,21 @@ document.addEventListener('DOMContentLoaded', () => {
     statusMsg.className = `status-msg ${type}`;
   }
 
-  function hideStatus() {
+  // Reset
+  resetBtn.addEventListener('click', () => {
+    stopCamera();
+    qrInput.value = '';
+    previewImg.src = '';
+    previewImg.hidden = true;
+    uploadContent.classList.remove('hidden');
+    amountInput.value = '';
+    merchantInput.value = '';
+    rawDataTextarea.value = '';
+    currencySymbol.textContent = '$';
     statusMsg.className = 'status-msg hidden';
-  }
+    
+    if (tabCamera.classList.contains('active')) {
+      startCamera();
+    }
+  });
 });
