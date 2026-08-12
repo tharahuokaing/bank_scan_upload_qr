@@ -243,3 +243,63 @@ textarea {
 .btn-primary:hover {
     opacity: 0.85;
 }
+
+/* =========================================================
+   ENHANCED ACTION BUTTONS CONSOLE STYLES
+========================================================= */
+
+.action-controls-row {
+    display: flex;
+    gap: 15px;
+    margin-top: 25px;
+    width: 100%;
+}
+
+/* Primary Confirm Payment Button Style */
+.btn-primary-pay {
+    background: linear-gradient(135deg, #0ecb81 0%, #059669 100%);
+    color: #ffffff;
+    border: none;
+    padding: 14px 24px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 0.95rem;
+    flex: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-shadow: 0 4px 12px rgba(14, 203, 129, 0.3);
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-primary-pay:hover {
+    background: linear-gradient(135deg, #10b981 0%, #047857 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(14, 203, 129, 0.4);
+}
+
+/* Secondary Reset / Clear Button Style */
+.btn-secondary-reset {
+    background: transparent;
+    color: #848e9c;
+    border: 1px solid #2b313a;
+    padding: 14px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 0.9rem;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-secondary-reset:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: #eaecef;
+    border-color: #848e9c;
+}
