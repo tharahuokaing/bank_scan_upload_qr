@@ -691,3 +691,343 @@ textarea {
     color: var(--text-primary);
     border-color: var(--text-secondary);
 }
+
+/* =========================================================
+   HUOKAING THARA - FULL RESPONSIVE QR SCANNER STYLESHEET
+========================================================= */
+
+:root {
+    --bg-main: #0b0e11;
+    --bg-card: #181a20;
+    --border-color: #2b313a;
+    --accent-gold: #f0b90b;
+    --accent-yellow-hover: #fcd535;
+    --text-primary: #eaecef;
+    --text-secondary: #848e9c;
+    --success-color: #0ecb81;
+    --error-color: #f6465d;
+}
+
+/* Global Full-Size Layout */
+body {
+    background-color: var(--bg-main);
+    background-image: 
+        radial-gradient(circle at 15% 15%, rgba(240, 185, 11, 0.05) 0%, transparent 45%),
+        radial-gradient(circle at 85% 85%, rgba(56, 189, 248, 0.04) 0%, transparent 45%);
+    color: var(--text-primary);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    margin: 0;
+    padding: 15px;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+}
+
+/* Main Adaptive Card Container (Optimized for Android & Desktop) */
+.card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 24px;
+    width: 100%;
+    max-width: 540px;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7);
+    box-sizing: border-box;
+}
+
+@media (min-width: 768px) {
+    .card {
+        padding: 36px;
+        max-width: 580px;
+    }
+}
+
+.card h2 {
+    font-size: 1.4rem;
+    margin: 0 0 4px 0;
+    color: var(--text-primary);
+}
+
+.subtitle {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin: 0 0 16px 0;
+}
+
+/* Google Translate Widget Styling */
+.translate-container {
+    margin-bottom: 16px;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.goog-te-combo {
+    background-color: var(--bg-main) !important;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--border-color) !important;
+    padding: 10px 14px !important;
+    border-radius: 8px !important;
+    font-size: 0.9rem !important;
+    outline: none !important;
+    cursor: pointer;
+    width: 100%;
+}
+
+.goog-te-banner-frame.skiptranslate {
+    display: none !important;
+}
+
+/* Mode Selector Tabs */
+.tab-group {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 16px;
+}
+
+.tab-btn {
+    flex: 1;
+    background: var(--bg-main);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+    padding: 12px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+}
+
+.tab-btn.active {
+    background: var(--accent-gold);
+    color: var(--bg-main);
+    border-color: var(--accent-gold);
+}
+
+/* View Sections */
+.view-section.hidden {
+    display: none;
+}
+
+.upload-area {
+    border: 2px dashed var(--border-color);
+    border-radius: 12px;
+    padding: 24px 16px;
+    text-align: center;
+    cursor: pointer;
+    background: rgba(255, 255, 255, 0.01);
+    transition: border-color 0.2s ease;
+    margin-bottom: 16px;
+}
+
+.upload-area:hover {
+    border-color: var(--accent-gold);
+}
+
+.upload-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.upload-content svg {
+    stroke: var(--text-secondary);
+}
+
+#preview-img {
+    max-width: 100%;
+    max-height: 220px;
+    border-radius: 8px;
+    object-fit: contain;
+}
+
+/* Camera Wrapper & Android Responsive Sizing */
+.camera-wrapper {
+    position: relative;
+    width: 100%;
+    height: 280px;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #000;
+    margin-bottom: 16px;
+}
+
+@media (min-width: 768px) {
+    .camera-wrapper {
+        height: 320px;
+    }
+}
+
+#webcam {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+}
+
+.scanner-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    pointer-events: none;
+}
+
+.scan-box {
+    width: 180px;
+    height: 180px;
+    border: 2px solid var(--accent-gold);
+    border-radius: 12px;
+    box-shadow: 0 0 15px rgba(240, 185, 11, 0.4);
+}
+
+/* Form Groups & Inputs */
+.form-group {
+    margin-bottom: 12px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+}
+
+.input-wrapper {
+    display: flex;
+    align-items: center;
+    background: var(--bg-main);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.currency-symbol {
+    padding: 0 12px;
+    color: var(--accent-gold);
+    font-weight: bold;
+    font-size: 1rem;
+}
+
+input[type="number"], input[type="text"], textarea {
+    width: 100%;
+    background: var(--bg-main);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    outline: none;
+    box-sizing: border-box;
+}
+
+.input-wrapper input {
+    border: none;
+    background: transparent;
+}
+
+input[type="number"]:focus, input[type="text"]:focus, textarea:focus {
+    border-color: var(--accent-gold);
+}
+
+textarea {
+    resize: none;
+    font-family: monospace;
+    font-size: 0.8rem;
+    height: 60px;
+}
+
+/* Status Message */
+.status-msg {
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    margin-bottom: 12px;
+    font-weight: 500;
+}
+
+.status-msg.hidden {
+    display: none;
+}
+
+.status-msg.success {
+    background: rgba(14, 203, 129, 0.15);
+    color: var(--success-color);
+    border: 1px solid rgba(14, 203, 129, 0.3);
+}
+
+.status-msg.error {
+    background: rgba(246, 70, 93, 0.15);
+    color: var(--error-color);
+    border: 1px solid rgba(246, 70, 93, 0.3);
+}
+
+.status-msg.warning {
+    background: rgba(240, 185, 11, 0.15);
+    color: var(--accent-gold);
+    border: 1px solid rgba(240, 185, 11, 0.3);
+}
+
+/* Action Controls Row (Optimized Touch targets for Android & Desktop) */
+.action-controls-row {
+    display: flex;
+    gap: 12px;
+    margin-top: 18px;
+    width: 100%;
+}
+
+.btn-yellow-pay {
+    background-color: var(--accent-gold);
+    color: var(--bg-main);
+    border: none;
+    padding: 14px 18px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 0.95rem;
+    flex: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    box-shadow: 0 4px 12px rgba(240, 185, 11, 0.3);
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-yellow-pay:hover {
+    background-color: var(--accent-yellow-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(240, 185, 11, 0.4);
+}
+
+.btn-secondary-reset {
+    background: transparent;
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+    padding: 14px 16px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 0.9rem;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-secondary-reset:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-primary);
+    border-color: var(--text-secondary);
+}
