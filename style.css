@@ -216,3 +216,30 @@ textarea {
 }
 
 .btn-reset:hover { background: #1d4ed8; }
+
+/* =========================================================
+   ACTION BUTTONS CONTAINER STYLES
+========================================================= */
+
+.action-controls-row {
+    display: flex;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.btn-primary {
+    background: var(--accent-gold, #f0b90b);
+    color: #0b0e11;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 0.9rem;
+    flex: 1;
+    transition: opacity 0.2s ease;
+}
+
+.btn-primary:hover {
+    opacity: 0.85;
+}
