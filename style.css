@@ -339,3 +339,35 @@ textarea {
     transform: translateY(-1px);
     box-shadow: 0 6px 16px rgba(240, 185, 11, 0.4);
 }
+
+/* =========================================================
+   GOOGLE TRANSLATE WIDGET STYLING
+========================================================= */
+
+.translate-container {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.goog-te-combo {
+    background-color: #181a20 !important;
+    color: #eaecef !important;
+    border: 1px solid #2b313a !important;
+    padding: 8px 12px !important;
+    border-radius: 8px !important;
+    font-size: 0.9rem !important;
+    outline: none !important;
+    cursor: pointer;
+    width: 100%;
+}
+
+/* Hide Google banner frame top bar */
+.goog-te-banner-frame.skiptranslate {
+    display: none !important;
+}
+
+body {
+    top: 0 !important;
+}
