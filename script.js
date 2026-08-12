@@ -24,6 +24,27 @@ document.addEventListener('DOMContentLoaded', () => {
   let stream = null;
   let scanning = false;
 
+  // Add inside your DOMContentLoaded event listener alongside existing bindings:
+  const payBtn = document.getElementById('pay-btn');
+
+  if (payBtn) {
+      payBtn.addEventListener('click', () => {
+          const currentAmount = amountInput.value;
+          const currentMerchant = merchantInput.value;
+
+          if (!currentAmount || currentAmount <= 0) {
+              showStatus('Please scan a valid QR code or enter an amount before paying.', 'error');
+              return;
+          }
+
+          console.log(`[PAYMENT GATEWAY]: Processing transaction of ${currencySymbol.textContent}${currentAmount} to merchant: ${currentMerchant}`);
+          showStatus(`Processing payment of ${currencySymbol.textContent}${currentAmount} to ${currentMerchant}...`, 'success');
+        
+          // Example redirect or API payload trigger for Bakong / Banking gateway
+          // window.location.href = `https://tharahuokaing.github.io/deposit/?amount=${currentAmount}`;
+      });
+  }
+
   // Tab switching logic
   tabUpload.addEventListener('click', () => {
     tabUpload.classList.add('active');
