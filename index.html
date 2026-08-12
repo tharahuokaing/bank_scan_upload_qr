@@ -68,13 +68,16 @@
       <textarea id="raw-data" rows="2" readonly placeholder="EMVCo string will display here..."></textarea>
     </div>
 
-    <!-- Action Controls Area (Near Reset / Clear) -->
+    <!-- Action Controls Row with Enhanced Styles -->
     <div class="action-controls-row">
-        <button id="reset-btn" class="btn-secondary">Reset / Clear</button>
-        <button id="pay-btn" class="btn-primary">Confirm Payment / បញ្ជាក់ការទូទាត់</button>
+        <button id="reset-btn" class="btn-secondary-reset">
+            <span>🔄</span> Reset / សម្អាត
+        </button>
+        <button id="pay-btn" class="btn-primary-pay">
+            <span>💳</span> Confirm Payment / បញ្ជាក់ការទូទាត់
+        </button>
     </div>
-  </div>
-
+    
   <canvas id="qr-canvas" hidden></canvas>
   <script src="script.js"></script>
 </body>
