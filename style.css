@@ -303,3 +303,39 @@ textarea {
     color: #eaecef;
     border-color: #848e9c;
 }
+
+/* =========================================================
+   SOLID YELLOW CONFIRM PAYMENT BUTTON STYLES
+========================================================= */
+
+.action-controls-row {
+    display: flex;
+    gap: 15px;
+    margin-top: 25px;
+    width: 100%;
+}
+
+/* Solid Yellow Cover Payment Button */
+.btn-yellow-pay {
+    background-color: #f0b90b;
+    color: #0b0e11;
+    border: none;
+    padding: 14px 24px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 0.95rem;
+    flex: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-shadow: 0 4px 12px rgba(240, 185, 11, 0.3);
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-yellow-pay:hover {
+    background-color: #fcd535;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(240, 185, 11, 0.4);
+}
